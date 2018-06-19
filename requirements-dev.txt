@@ -1,0 +1,8 @@
+-r requirements.txt
+coverage
+pylint
+pytest
+pytest-cov
+setuptools
+twine
+wheel

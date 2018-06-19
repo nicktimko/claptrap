@@ -1,0 +1,6 @@
+include Makefile LICENSE.md README.md
+
+graft claptrap/data
+graft tests
+
+global-exclude *.py[co]

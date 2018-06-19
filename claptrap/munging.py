@@ -9,7 +9,14 @@ import struct
 
 
 # whole words and some punctuation
-ELEMENT_MATCHER = re.compile(r'(\b[a-zA-Z\']+\b|;|:|,|\.|\?|!)')
+ELEMENT_MATCHER = r'((Dr|Mr|Mrs|Prof).|\b[a-zA-Z\']+\b|;|:|,|\.|\?|!)'
+
+QUOTE_TRANS = str.maketrans({
+    '\N{LEFT SINGLE QUOTATION MARK}': "'",
+    '\N{RIGHT SINGLE QUOTATION MARK}': "'",
+    '\N{LEFT DOUBLE QUOTATION MARK}': '"',
+    '\N{RIGHT DOUBLE QUOTATION MARK}': '"',
+})
 
 
 def gen_words(*, filename=None, text=None, harmonize_caps=True):
@@ -25,8 +32,9 @@ def gen_words(*, filename=None, text=None, harmonize_caps=True):
         translator = {}
 
     for line in lines:
-        line = line.replace('\N{LEFT SINGLE QUOTATION MARK}', "'").replace('\N{RIGHT SINGLE QUOTATION MARK}', "'")
+        line = line.translate(QUOTE_TRANS)
         for word in re.findall(ELEMENT_MATCHER, line):
+            word = word[0]
             yield translator.get(word, word)
 
 
@@ -155,6 +163,3 @@ def phrase(word_gen, length=100):
     if rule[-1] in PUNCTUATION:
         return rule[:-1] + random.choice(list(TERMINAL_PUNCT))
     return rule
-
-
-

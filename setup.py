@@ -20,4 +20,5 @@ setup(
         'Programming Language :: Python :: 3',
     ],
     packages=['claptrap'],
+    include_package_data=True,  # use what's in MANIFEST.in
 )
