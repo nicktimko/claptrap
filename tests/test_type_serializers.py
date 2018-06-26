@@ -48,10 +48,12 @@ def test_pack_strarr():
     assert pack_strarr([]) == b'\x00'
     assert pack_strarr(['hey', 'there', '\N{UNICORN FACE}']) == b'\x03\x03hey\x05there\x04\xf0\x9f\xa6\x84'
 
+
 def test_unpack_strarr():
     assert unpack_strarr(b'\x00') == []
     assert unpack_strarr(b'\x01\x01x') == ['x']
     assert unpack_strarr(b'\x01\x01x' + bytes(100)) == ['x']
+
 
 def test_packunpack_strarr():
     def pup(x):
@@ -71,6 +73,7 @@ def test_pack_intarr():
     assert pack_intarr_2d([[1]]) == bytes([1] * 3)
     assert pack_intarr_2d([[2, 2], [2, 2]]) == bytes([2] * 6)
     assert pack_intarr_2d([[3] * 3] * 3) == bytes([3] * 11)
+
 
 def test_pack_intarr_bad():
     try:

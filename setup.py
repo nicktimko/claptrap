@@ -21,4 +21,9 @@ setup(
     ],
     packages=['claptrap'],
     include_package_data=True,  # use what's in MANIFEST.in
+    entry_points={
+        'console_scripts': [
+            'claptrap = claptrap.scripts:script_phrase',
+        ],
+    }
 )

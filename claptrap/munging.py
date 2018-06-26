@@ -2,7 +2,7 @@ import collections
 import contextlib
 import itertools
 import json
-import lzma
+# import lzma
 import re
 import random
 import struct

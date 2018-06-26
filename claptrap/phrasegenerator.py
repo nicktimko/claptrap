@@ -1,4 +1,5 @@
 import collections
+import random
 
 from .munging import (
     mat_to_sparse,
@@ -57,3 +58,61 @@ class PhraseGenerator:
     def to_file(self, path):
         with open(path, 'wb') as f:
             f.write(sparse_dump(self.matrix, self.words))
+
+
+def pick_random_node(G):
+    index = random.randrange(len(G))
+    for n, node in enumerate(G.nodes()):
+        if n == index:
+            return node
+
+
+def weighted_next(G, source):
+    if not len(G[source]):
+        return pick_random_node(G)
+    nodes, weights = zip(*((e['id'], e['weight']) for e in G[source].values()))
+    return random.choices(nodes, weights)[0]
+
+
+class GraphPhraseGenerator:
+    def __init__(self, digraph):
+        self.digraph = digraph
+        self._walker = self._walk()
+
+    def _walk(self):
+        node = pick_random_node(self.digraph)
+        while True:
+            yield node
+            node = weighted_next(self.digraph, node)
+
+    def phrase(self, length=(60, 100)):
+        try:
+            min_len, max_len = length
+        except TypeError:
+            min_len = max_len = length
+        if min_len > max_len:
+            raise ValueError('Minimum length must be smaller than the maximum length')
+        if min_len < 1:
+            raise ValueError('Length must be positive')
+
+        accum = ''
+        while not accum.isalpha():
+            accum = next(self._walker).title()
+
+        term = False
+        while len(accum) < min_len:
+            word = next(self._walker)
+            if word in set('.!?;,:'):
+                accum += word
+                if word in set('.!?'):
+                    term = True
+            else:
+                if term:
+                    word = word.title()
+                    term = False
+                accum += ' ' + word
+
+        accum = accum[:max_len]
+        if accum[-1] == ' ':
+            return accum[:-1] + random.choice('.!?s')
+        return accum
