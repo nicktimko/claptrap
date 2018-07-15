@@ -2,6 +2,7 @@
 # black==18.6b4  # doesn't work ouside of 3.6+
 codecov
 coverage
+invoke
 pylint
 pytest
 pytest-cov

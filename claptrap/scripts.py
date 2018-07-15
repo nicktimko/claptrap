@@ -32,11 +32,11 @@ def script_phrase_helper(corpus: str, length: str, count: int = 1):
 
     if corpus in CORPORA:
         corpus = CORPORA[corpus]
-        if 'pg' in corpus:
+        if "pg" in corpus:
             # cache for faster test runs across multiple parameters
-            phrase_gen = corpus['pg']
+            phrase_gen = corpus["pg"]
         else:
-            phrase_gen = corpus['pg'] = GraphPhraseGenerator.from_resource(corpus["c"])
+            phrase_gen = corpus["pg"] = GraphPhraseGenerator.from_resource(corpus["c"])
 
         for _ in range(count):
             if lenrange is None:
