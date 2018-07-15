@@ -42,7 +42,7 @@ def _check_methods(C, *methods):
 
 
 ### copypasta https://github.com/python/cpython/blob/16dfca4d8/Lib/contextlib.py#L15
-class AbstractContextManager(abc.ABC):
+class AbstractContextManager(metaclass=abc.ABCMeta):
 
     """An abstract base class for context managers."""
 

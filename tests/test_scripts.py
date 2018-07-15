@@ -3,8 +3,8 @@ import shlex
 from claptrap.scripts import script_phrase_helper
 
 
-LOOPS = 4
-MIN_RANGE = range(1, 10)
+LOOPS = 20
+MIN_RANGE = range(1, 40)
 MAX_LEN = 100
 
 def test_drac_phrase():
