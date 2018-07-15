@@ -1,4 +1,7 @@
-import contextlib
+try:
+    from contextlib import suppress
+except ImportError:
+    from .backports import suppress
 import importlib
 
 from .serializer import deserialize_digraph, serialize_digraph
@@ -6,7 +9,7 @@ from .serializer import deserialize_digraph, serialize_digraph
 
 COMPRESSORS = {lib: None for lib in ["gzip", "bz2", "lzma"]}
 for lib in COMPRESSORS:
-    with contextlib.suppress(ImportError):
+    with suppress(ImportError):
         COMPRESSORS[lib] = importlib.import_module(lib)
 
 

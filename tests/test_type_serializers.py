@@ -45,7 +45,8 @@ def test_packunpack_str():
 def test_pack_strarr():
     assert pack_strarr([]) == b"\x00"
     assert (
-        pack_strarr(["hey", "there", "\N{UNICORN FACE}"])
+        # "\U0001F984" = "\N{UNICORN FACE}" (3.3 doesn't like the name)
+        pack_strarr(["hey", "there", "\U0001F984"])
         == b"\x03\x03hey\x05there\x04\xf0\x9f\xa6\x84"
     )
 

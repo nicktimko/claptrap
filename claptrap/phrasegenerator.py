@@ -5,6 +5,7 @@ import random
 
 import networkx as nx
 
+from . import backports
 from . import dumps
 from .munging import gen_words
 from .serializer import deserialize_digraph
@@ -70,7 +71,7 @@ def weighted_next(G, source):
         return pick_random_node(G)
     # print(source, G[source].values())
     nodes, weights = zip(*((e.get("id", k), e["weight"]) for k, e in G[source].items()))
-    return random.choices(nodes, weights)[0]
+    return backports.choices(nodes, weights)[0]
 
 
 class GraphPhraseGenerator:
