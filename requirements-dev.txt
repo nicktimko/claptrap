@@ -1,5 +1,5 @@
 -r requirements.txt
-black==18.6b4
+# black==18.6b4  # doesn't work ouside of 3.6+
 codecov
 coverage
 pylint

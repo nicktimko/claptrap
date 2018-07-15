@@ -7,7 +7,7 @@ format:
 	black .
 
 test:
-	black --check .
+	# black --check .  # doesn't work in other versions
 	pytest --cov=claptrap
 	coverage report --show-missing
 	coverage html
