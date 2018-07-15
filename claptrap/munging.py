@@ -14,10 +14,14 @@ ELEMENT_MATCHER = r"((Dr|Mr|Mrs|Prof).|\b[a-zA-Z\']+\b|;|:|,|\.|\?|!)"
 
 QUOTE_TRANS = str.maketrans(
     {
-        "\N{LEFT SINGLE QUOTATION MARK}": "'",
-        "\N{RIGHT SINGLE QUOTATION MARK}": "'",
-        "\N{LEFT DOUBLE QUOTATION MARK}": '"',
-        "\N{RIGHT DOUBLE QUOTATION MARK}": '"',
+        # "\N{LEFT SINGLE QUOTATION MARK}": "'",
+        # "\N{RIGHT SINGLE QUOTATION MARK}": "'",
+        # "\N{LEFT DOUBLE QUOTATION MARK}": '"',
+        # "\N{RIGHT DOUBLE QUOTATION MARK}": '"',
+        "\u2018": "'",
+        "\u2019": "'",
+        "\u201C": '"',
+        "\u201D": '"',
     }
 )
 

@@ -64,7 +64,8 @@ def test_packunpack_strarr():
     a1 = ["x"] * 10000
     assert pup(a1) == a1
 
-    x = ord("\N{SLIGHTLY SMILING FACE}")
+    # x = ord("\N{SLIGHTLY SMILING FACE}")
+    x = ord("\U0001F642")
     emojis = [chr(n) for n in range(x, x + 130)]
     assert pup(emojis) == emojis
 
