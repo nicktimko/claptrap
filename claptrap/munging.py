@@ -2,6 +2,7 @@ import collections
 import contextlib
 import itertools
 import json
+
 # import lzma
 import re
 import random
@@ -9,25 +10,29 @@ import struct
 
 
 # whole words and some punctuation
-ELEMENT_MATCHER = r'((Dr|Mr|Mrs|Prof).|\b[a-zA-Z\']+\b|;|:|,|\.|\?|!)'
+ELEMENT_MATCHER = r"((Dr|Mr|Mrs|Prof).|\b[a-zA-Z\']+\b|;|:|,|\.|\?|!)"
 
-QUOTE_TRANS = str.maketrans({
-    '\N{LEFT SINGLE QUOTATION MARK}': "'",
-    '\N{RIGHT SINGLE QUOTATION MARK}': "'",
-    '\N{LEFT DOUBLE QUOTATION MARK}': '"',
-    '\N{RIGHT DOUBLE QUOTATION MARK}': '"',
-})
+QUOTE_TRANS = str.maketrans(
+    {
+        "\N{LEFT SINGLE QUOTATION MARK}": "'",
+        "\N{RIGHT SINGLE QUOTATION MARK}": "'",
+        "\N{LEFT DOUBLE QUOTATION MARK}": '"',
+        "\N{RIGHT DOUBLE QUOTATION MARK}": '"',
+    }
+)
 
 
 def gen_words(*, filename=None, text=None, harmonize_caps=True):
     if filename:
-        with open(filename, encoding='utf-8') as f:
+        with open(filename, encoding="utf-8") as f:
             lines = [line for line in f if not line.isupper()]
     else:
         lines = text.splitlines()
 
     if harmonize_caps:
-        translator = most_common_capitalization(gen_words(filename=filename, text=text, harmonize_caps=False))
+        translator = most_common_capitalization(
+            gen_words(filename=filename, text=text, harmonize_caps=False)
+        )
     else:
         translator = {}
 
@@ -56,79 +61,24 @@ def most_common_capitalization(words):
     return translator
 
 
-def matgen(vocab, corpus):
-    vocab = list(vocab)
-    n_vocab = len(vocab)
-    vocab_set = set(vocab)
-    matrix = [[0] * n_vocab for _ in range(n_vocab)]
-
-    words = (word for word in corpus if word in vocab_set)
-
-    prev = vocab.index(next(words))
-    for word in words:
-        state = vocab.index(word)
-        matrix[prev][state] += 1
-        prev = state
-
-    return matrix
-
-
-def mat_to_sparse(mat):
-    '''
-    Output:
-
-    {
-        row_index: [  # if row has any values
-            col_indexes,
-            col_weights,
-        ],
-        ...
-    }
-    '''
-    data = {}
-    for i, row in enumerate(mat):
-        for j, val in enumerate(row):
-            if val:
-                data.setdefault(i, [])
-                data[i].append([j, val])
-        if data[i]:
-            data[i] = list(list(x) for x in zip(*data[i]))
-    return data
-
-
-def sparse_dump(sparse_mat, words, compress=True):
-    dump = {'data': sparse_mat, 'words': words}
-    cereal = json.dumps(dump, separators=(',', ':'))
-    if compress:
-        return lzma.compress(cereal.encode('utf-8'))
-    return cereal
-
-
-def sparse_load(cereal):
-    if isinstance(cereal, bytes):
-        cereal = lzma.decompress(cereal)
-    dump = json.loads(cereal)
-    data = {int(k): v for k, v in dump['data'].items()}
-    words = dump['words']
-    return data, words
-
-
 def word_gen(words, smat):
     try:
-        state = words.index('.')
+        state = words.index(".")
     except ValueError:
         state = random.randrange(len(smat))
     while True:
         try:
             indexes, weights = smat[state]
-            state = indexes[random.choices(list(range(len(indexes))), weights=weights)[0]]
+            state = indexes[
+                random.choices(list(range(len(indexes))), weights=weights)[0]
+            ]
         except IndexError:  # dead-end states
             state = random.randrange(len(smat))
         yield words[state]
 
 
-PUNCTUATION = set(',.;:?!')
-TERMINAL_PUNCT = set('.?!')
+PUNCTUATION = set(",.;:?!")
+TERMINAL_PUNCT = set(".?!")
 
 
 def title(word):
@@ -137,7 +87,7 @@ def title(word):
 
 
 def phrase(word_gen, length=100):
-    '''Generate some random "words" with some specified total char length'''
+    """Generate some random "words" with some specified total char length"""
     try:
         min_length, max_length = length
     except TypeError:
@@ -150,16 +100,16 @@ def phrase(word_gen, length=100):
                 continue
             rule += word
         elif rule[-1] in TERMINAL_PUNCT:
-            rule += ' ' + title(word)
+            rule += " " + title(word)
         else:
-            rule += ' ' + word
+            rule += " " + word
         if len(rule) >= min_length:
             break
     rule = rule[:max_length]
-    if rule[-1] == ' ':
+    if rule[-1] == " ":
         if rule[-2] in PUNCTUATION:
-            return rule[:-2] + 's' + random.choice(list(TERMINAL_PUNCT))
-        return rule[:-1] + 's'
+            return rule[:-2] + "s" + random.choice(list(TERMINAL_PUNCT))
+        return rule[:-1] + "s"
     if rule[-1] in PUNCTUATION:
         return rule[:-1] + random.choice(list(TERMINAL_PUNCT))
     return rule

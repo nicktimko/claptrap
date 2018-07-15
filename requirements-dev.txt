@@ -1,4 +1,6 @@
 -r requirements.txt
+black==18.6b4
+codecov
 coverage
 pylint
 pytest

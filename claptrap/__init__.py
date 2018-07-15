@@ -1,4 +1,4 @@
 from .canned import wub
-from .phrasegenerator import PhraseGenerator
+from .phrasegenerator import GraphPhraseGenerator
 
-__version__ = '0.1.0'
+__version__ = "0.1.0"

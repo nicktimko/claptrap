@@ -1,10 +1,16 @@
-from claptrap import PhraseGenerator
+from claptrap import phrasegenerator as pg
 
 
-def test_phrasegen_fromdump():
-    pg = PhraseGenerator.from_dump(file='dumps/markov-hockey.xz')
+def test_fromcorpus():
+    text = "hello there what is up"
+    G = pg.from_corpus(text)
 
-    assert len(pg.phrase(length=100)) == 100
-    assert len(pg.phrase(length=10)) == 10
-    for _ in range(20):
-        assert 30 <= len(pg.phrase(length=(30, 40))) <= 40
+    assert len(G.edges()) == 4
+    assert len(G.nodes()) == 5
+
+
+def test_phrasegen():
+    text = "hello folks hello world"
+    phrasegen = pg.GraphPhraseGenerator.from_corpus(text)
+
+    phrasegen.phrase()
